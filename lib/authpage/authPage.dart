@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fureverhome/users/guest_user.dart';
+import 'package:fureverhome/users/registered_user.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -15,14 +17,28 @@ class AuthPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _widgetAuthContainer(
-                      title: 'Find a Pet',
-                      description:
-                          'Start your journey to finding a loving pet today! \n Browse through our listings and discover your perfect companion.'),
-                  _widgetAuthContainer(
-                      title: 'Find a Home',
-                      description:
-                          'Looking for a loving home for your pet? List them here')
+                  Material(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, GuestUser.guestScreen);
+                      },
+                      child: _widgetAuthContainer(
+                          title: 'Find a Pet',
+                          description:
+                              'Start your journey to finding a loving pet today! \n Browse through our listings and discover your perfect companion.'),
+                    ),
+                  ),
+                  Material(
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.pushNamed(context, RegisteredUser.registered_user_screen);
+                      },
+                      child: _widgetAuthContainer(
+                          title: 'Find a Home',
+                          description:
+                              'Looking for a loving home for your pet? List them here'),
+                    ),
+                  )
                 ],
               ),
             )),
@@ -35,32 +51,24 @@ Widget _widgetAuthContainer(
     {required String title, required String description}) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
-    child: Material(
+    child: Container(
+      height: 350,
+      width: 150,
+      padding: EdgeInsets.all(8),
       color: Colors.white,
-      child: InkWell(
-        onTap: () {
-          print('TAPPED');
-        },
-        child: Container(
-          height: 350,
-          width: 150,
-          padding: EdgeInsets.all(8),
-          color: Colors.white,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-              )
-            ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            textAlign: TextAlign.center,
           ),
-        ),
+          Text(
+            description,
+            textAlign: TextAlign.center,
+          )
+        ],
       ),
     ),
   );
