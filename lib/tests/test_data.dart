@@ -1,4 +1,4 @@
-final List<Map<String, dynamic>> testPets = [
+final List<Map<String, dynamic>> displayPets = [
   {
     'name': 'Buddy',
     'breed': 'Golden Retriever',
@@ -32,6 +32,12 @@ final List<Map<String, dynamic>> testPets = [
     'breed': 'Labrador Retriever',
     'age': 5,
     'place': 'Taguig',
+    'img' : 'assets/cat.jpg'
+  },  {
+    'name': 'Max',
+    'breed': 'Labrador Retriever',
+    'age': 6,
+    'place': 'Iligan',
     'img' : 'assets/cat.jpg'
   },
 ];
