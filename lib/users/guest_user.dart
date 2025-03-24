@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../petScreen/petScreenDetails.dart';
+import '../pages/petScreenDetails.dart';
 import 'guest_user_filter.dart';
+import '../pages/info.dart';
 
 class GuestUser extends StatefulWidget {
   static final String guestScreen = '/guest_user';
@@ -20,6 +21,12 @@ class _GuestUserState extends State<GuestUser> {
     List<Map<String, dynamic>> displayPets = filterPets(query: searchQuery);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 5,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+        ),
         title: Row(
           children: [
             Expanded(
@@ -45,14 +52,16 @@ class _GuestUserState extends State<GuestUser> {
               ),
             ),
             SizedBox(width: 10),
-            Icon(Icons.info_outline, size: 35)
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Info.info_screen);
+              },
+              icon: Icon(
+                Icons.info_outline,
+                size: 35,
+              ),
+            )
           ],
-        ),
-        backgroundColor: Colors.white,
-        elevation: 5,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
         ),
       ),
       body: Padding(
@@ -122,7 +131,8 @@ Widget _petCard({
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(image, height: 150, width: double.infinity, fit: BoxFit.cover),
+              child: Image.asset(image,
+                  height: 150, width: double.infinity, fit: BoxFit.cover),
             ),
           ),
           Text(name, style: TextStyle(fontWeight: FontWeight.bold)),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fureverhome/pages/info.dart';
 import 'package:fureverhome/users/guest_user.dart';
 import 'package:fureverhome/users/registered_user.dart';
 import 'authpage/authPage.dart';
@@ -18,7 +19,8 @@ class MainPage extends StatelessWidget {
       routes: {
       '/' : (context)=> AuthPage(),
         GuestUser.guestScreen: (context) => GuestUser(),
-        RegisteredUser.registered_user_screen: (context) => RegisteredUser()
+        RegisteredUser.registered_user_screen: (context) => RegisteredUser(),
+        Info.info_screen: (context) => Info()
       },
     );
   }
