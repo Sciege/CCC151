@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fureverhome/authentication/signup/sign_up.dart';
 import 'package:fureverhome/users/guest_user.dart';
 import 'package:fureverhome/users/registered_user.dart';
 
@@ -23,15 +24,16 @@ class AuthPage extends StatelessWidget {
                         Navigator.pushNamed(context, GuestUser.guestScreen);
                       },
                       child: _widgetAuthContainer(
-                          title: 'Find a Pet',
+                          title: 'Find a Pet.js',
                           description:
                               'Start your journey to finding a loving pet today! \n Browse through our listings and discover your perfect companion.'),
                     ),
                   ),
                   Material(
                     child: InkWell(
-                      onTap: (){
-                        Navigator.pushNamed(context, RegisteredUser.registered_user_screen);
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => SignUp()));
                       },
                       child: _widgetAuthContainer(
                           title: 'Find a Home',
