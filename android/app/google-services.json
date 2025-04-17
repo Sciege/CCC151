@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "223102233820",
+    "project_id": "furhome-d9926",
+    "storage_bucket": "furhome-d9926.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223102233820:android:a22ad06f9f7ef797ced819",
+        "android_client_info": {
+          "package_name": "com.example.fureverhome"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB09EpOcJqi8oHuC8geeKaH2qPa6p6ao5o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
