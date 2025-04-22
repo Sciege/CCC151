@@ -54,6 +54,34 @@ class _RegisteredUserState extends State<RegisteredUser> {
     }
   }
 
+  // Update pet details
+  //PUT
+  Future putPet(String petId) async {
+    String? token = await getIdToken();
+    try {
+      final response = await http.put(
+          Uri.parse('http://10.0.2.2:5000/api/pets/$petId'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+          body: jsonEncode({
+            'name': nameController.text,
+            'breed': breedController.text,
+            'age': ageController.text,
+            'location': placeController.text
+          }));
+      if(response.statusCode ==200){
+        print('Updated pet successfully');
+        getPets();
+      }else{
+        print('Failed to update the pets');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   // Add new pet to backend
   //POST
   Future addPet() async {
@@ -443,6 +471,7 @@ Widget _petCard({
         context,
         MaterialPageRoute(
           builder: (context) => PetDetailsScreen(
+            image: imageUrl,
             name: name,
             breed: breed,
             age: petAge,
