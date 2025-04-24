@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fureverhome/authentication/auth_registered_users.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart'; // Importing the image_picker package
+import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import '../pages/info.dart';
@@ -46,6 +46,7 @@ class _RegisteredUserState extends State<RegisteredUser> {
         setState(() {
           pets = json.decode(response.body); // Update pets list
         });
+
       } else {
         print('Failed to load pets');
       }
@@ -71,10 +72,10 @@ class _RegisteredUserState extends State<RegisteredUser> {
             'age': ageController.text,
             'location': placeController.text
           }));
-      if(response.statusCode ==200){
+      if (response.statusCode == 200) {
         print('Updated pet successfully');
         getPets();
-      }else{
+      } else {
         print('Failed to update the pets');
       }
     } catch (e) {
@@ -139,7 +140,8 @@ class _RegisteredUserState extends State<RegisteredUser> {
 
       if (petResponse.statusCode == 201) {
         print('Pet added successfully');
-
+        //NEW
+        await getPets();
         // Update the pets list manually to include the newly added pet
         setState(() {
           pets.add({
@@ -177,6 +179,8 @@ class _RegisteredUserState extends State<RegisteredUser> {
 
       if (response.statusCode == 200) {
         print("Pet deleted successfully");
+        //NEW
+        await getPets();
         return true;
       } else {
         print('Failed to delete pet: ${response.body}');
@@ -369,9 +373,13 @@ class _RegisteredUserState extends State<RegisteredUser> {
                           breed: pet['breed'],
                           age: pet['age'],
                           place: pet['location'],
-                          context: context),
+                          context: context,
+                          pet: pet,
+                          putPet: putPet,
+                          // ✅ Added
+                          refreshPets: getPets // ✅ Added),
+                          ),
                     );
-
                     //   ListTile(
                     //   title: Text(pet['name']),
                     //   subtitle: Text(
@@ -451,6 +459,9 @@ Widget _petCard({
   required dynamic age,
   required String place,
   required BuildContext context,
+  required Map<String, dynamic> pet, // <-- Added to access pet fields
+  required Future<void> Function(String) putPet,
+  required VoidCallback refreshPets, // <-- Added to re-fetch pets after update
 }) {
   // Handle potential null values for image and age
   String imageUrl = '';
@@ -476,9 +487,18 @@ Widget _petCard({
             breed: breed,
             age: petAge,
             place: place,
+            isEditable: true,
+            petId: pet['_id'], // Pass the pet ID from the pet object
+            refreshPets: refreshPets, // Pass the refreshPets callback
           ),
         ),
-      );
+      ).then((value) {
+        // Refresh pets list when returning from details screen
+        if (value != null) {
+          refreshPets();
+
+        }
+      });
     },
     child: Container(
       decoration: BoxDecoration(

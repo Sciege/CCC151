@@ -240,6 +240,8 @@ Widget _petCard({
             breed: breed,
             age: petAge,
             place: place,
+            petId: '',
+            refreshPets: () {},
           ),
         ),
       );
@@ -321,7 +323,7 @@ Widget _petCard({
                   Text(
                     '📍$place',
                     style: TextStyle(
-                      fontSize: 11,
+                        fontSize: 11,
                         fontFamily: 'NotoSansArabic',
                         fontWeight: FontWeight.normal),
                   ),
