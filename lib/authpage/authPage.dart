@@ -9,44 +9,54 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Furever Home',style: TextStyle(
-          fontSize: 26,
-          fontWeight: FontWeight.normal,
-        ),),
+        title: const Text(
+          'Furever Home',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
         backgroundColor: Colors.blue,
       ),
       body: Center(
-        child: Container(
-          height: 400,
-          width: 350,
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(15), // Increased radius for smoother edges
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildAuthContainer(
-                icon: Icon(Icons.pets_sharp,size: 50),
-                context: context,
-                title: 'Find a Pet',
-                description: 'Start your journey to finding a loving pet today! Browse through our listings and discover your perfect companion.',
-                onTap: () {
-                  Navigator.pushNamed(context, GuestUser.guestScreen);
-                },
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            double containerWidth = constraints.maxWidth > 400 ? 350 : constraints.maxWidth * 0.9;
+            double containerHeight = constraints.maxHeight * 0.6;
+
+            return Container(
+              height: containerHeight,
+              width: containerWidth,
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(15),
               ),
-              _buildAuthContainer(
-                icon: Icon(Icons.home,size: 50),
-                context: context,
-                title: 'Find a Home',
-                description: 'Looking for a loving home for your pet? List them here.',
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
-                },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildAuthContainer(
+                    icon: Icon(Icons.pets_sharp, size: 50),
+                    context: context,
+                    title: 'Find a Pet',
+                    description: 'Start your journey to finding a loving pet today! Browse through our listings and discover your perfect companion.',
+                    onTap: () {
+                      Navigator.pushNamed(context, GuestUser.guestScreen);
+                    },
+                  ),
+                  _buildAuthContainer(
+                    icon: Icon(Icons.home, size: 50),
+                    context: context,
+                    title: 'Find a Home',
+                    description: 'Looking for a loving home for your pet? List them here.',
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -57,31 +67,32 @@ class AuthPage extends StatelessWidget {
     required BuildContext context,
     required String title,
     required String description,
-    required VoidCallback onTap, // just used for action
+    required VoidCallback onTap,
   }) {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: 350,
-        width: 150,
+        ///Added MediaQuery for responsive
+        height: MediaQuery.of(context).size.height * 0.4,
+        width: MediaQuery.of(context).size.width * 0.4,
         padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(15), // Increased radius for smoother edges
+          borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
               spreadRadius: 2,
-              blurRadius: 10, // Increased blur radius for softer shadow
-              offset: const Offset(0, 5), // Increased offset for better shadow effect
+              blurRadius: 10,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
-        clipBehavior: Clip.antiAlias, // Ensure proper clipping of rounded corners
+        clipBehavior: Clip.antiAlias,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            icon, // use icon instantly since it is declared Icon
+            icon,
             Text(
               title,
               textAlign: TextAlign.center,
