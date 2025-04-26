@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:http/http.dart' as http;
 import '../pages/petScreenDetails.dart';
 import 'guest_user_filter.dart';
 import '../pages/info.dart';
-import 'package:http/http.dart' as http;
 
 class GuestUser extends StatefulWidget {
   static final String guestScreen = '/guest_user';
@@ -177,37 +178,192 @@ class _GuestUserState extends State<GuestUser> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: displayPets.isEmpty
-            ? const Center(child: Text('No pets found.'))
-            : GridView.builder(
-                itemCount: displayPets.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 items per row
-                  crossAxisSpacing: 8, // Space between columns
-                  mainAxisSpacing: 8, // Space between rows
-                  childAspectRatio: 0.8, // Adjust size ratio of each item
-                ),
-                itemBuilder: (context, index) {
-                  final pet = displayPets[index];
-                  return _petCard(
-                    image: pet['imageUrl'],
-                    // Pass the image URL directly, handle null in _petCard
-                    name: pet['name'] ?? 'Unknown',
-                    breed: pet['breed'] ?? 'Unknown',
-                    age: pet['age'] ?? 0,
-                    place: pet['place'] ?? pet['location'] ?? 'Unknown',
-                    // Handle both place and location fields
-                    context: context,
-                  );
-                },
+        child: Column(
+          children: [
+            // Carousel view at the top
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 200,
+                // Height of the carousel
+                aspectRatio: 16 / 9,
+                // Aspect ratio of each item
+                viewportFraction: 0.8,
+                // Fraction of the viewport each item occupies
+                enlargeCenterPage: true,
+                // Enlarge the center item
+                enlargeFactor: 0.3,
+                // Amount to enlarge the center item
+                autoPlay: true,
+                // Enable auto-scrolling
+                autoPlayInterval: const Duration(seconds: 3),
+                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                autoPlayCurve: Curves.fastOutSlowIn,
               ),
+              items: displayPets.map((pet) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return _carouselPetCard(
+                      image: pet['imageUrl'],
+                      name: pet['name'] ?? 'Unknown',
+                      breed: pet['breed'] ?? 'Unknown',
+                      age: pet['age'] ?? 0,
+                      place: pet['place'] ?? pet['location'] ?? 'Unknown',
+                      context: context,
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16), // Space between carousel and grid
+            // Grid view for the rest of the pets
+            displayPets.isEmpty
+                ? const Center(child: Text('No pets found.'))
+                : Expanded(
+                    child: GridView.builder(
+                      itemCount: displayPets.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, // 2 items per row
+                        crossAxisSpacing: 8, // Space between columns
+                        mainAxisSpacing: 8, // Space between rows
+                        childAspectRatio: 0.8, // Adjust size ratio of each item
+                      ),
+                      itemBuilder: (context, index) {
+                        final pet = displayPets[index];
+                        return _petCard(
+                          image: pet['imageUrl'],
+                          name: pet['name'] ?? 'Unknown',
+                          breed: pet['breed'] ?? 'Unknown',
+                          age: pet['age'] ?? 0,
+                          place: pet['place'] ?? pet['location'] ?? 'Unknown',
+                          context: context,
+                        );
+                      },
+                    ),
+                  ),
+          ],
+        ),
       ),
     );
   }
 }
 
+// Carousel pet card widget
+Widget _carouselPetCard({
+  required dynamic image,
+  required String name,
+  required String breed,
+  required dynamic age,
+  required String place,
+  required BuildContext context,
+}) {
+  // Handle potential null values for image and age
+  String imageUrl = '';
+  if (image != null && image.toString().isNotEmpty) {
+    // Extract just the filename from the URL
+    String originalUrl = image.toString();
+    String filename = originalUrl.split('/').last;
+
+    // Create a new URL pointing to our proxy endpoint
+    imageUrl = 'http://10.0.2.2:5000/api/pets/image/$filename';
+  }
+
+  final int petAge = age is int ? age : 0;
+
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PetDetailsScreen(
+            image: imageUrl,
+            name: name,
+            breed: breed,
+            age: petAge,
+            place: place,
+            petId: '',
+            refreshPets: () {},
+          ),
+        ),
+      );
+    },
+    child: Stack(
+      children: [
+        // Background image
+        ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: imageUrl.isNotEmpty
+              ? Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(child: Icon(Icons.broken_image));
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    );
+                  },
+                )
+              : const Center(child: Icon(Icons.pets)),
+        ),
+        // Gradient overlay for text
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            gradient: LinearGradient(
+              colors: [Colors.black.withOpacity(0.4), Colors.transparent],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+          ),
+        ),
+        // Pet information
+        Positioned(
+          bottom: 16,
+          left: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                '$breed • $petAge years old',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                '📍$place',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 // Pet card widget
-// Pet card widget with image proxy handling
 Widget _petCard({
   required dynamic image,
   required String name,
@@ -260,16 +416,13 @@ Widget _petCard({
           // Image container with fixed aspect ratio
           AspectRatio(
             aspectRatio: 1.5,
-            // Width is 1.5 times the height (landscape format)
             child: ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
               child: imageUrl.isNotEmpty
                   ? Image.network(
                       imageUrl,
-                      fit: BoxFit.cover, // Crop to fill the container
-                      alignment: Alignment.center, // Focus on center of image
+                      fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        print("Image error for $imageUrl: $error");
                         return const Center(child: Icon(Icons.broken_image));
                       },
                       loadingBuilder: (context, child, loadingProgress) {
@@ -290,45 +443,35 @@ Widget _petCard({
           // Pet information with padding
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(name,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'NotoSansArabic',
-                        fontWeight:
-                            FontWeight.bold, // This will load the Bold.ttf
-                      )),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        breed,
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'NotoSansArabic',
-                            fontWeight: FontWeight.normal),
-                      ),
-                      Text(' • '),
-                      Text(
-                        "$petAge",
-                        style: TextStyle(
-                            fontFamily: 'NotoSansArabic',
-                            fontWeight: FontWeight.normal),
-                      ),
-                    ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                  Text(
-                    '📍$place',
-                    style: TextStyle(
-                        fontSize: 11,
-                        fontFamily: 'NotoSansArabic',
-                        fontWeight: FontWeight.normal),
-                  ),
-                ],
-              ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      breed,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    Text(' • '),
+                    Text(
+                      "$petAge",
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+                Text(
+                  '📍$place',
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ],
             ),
           ),
         ],
