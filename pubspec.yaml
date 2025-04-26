@@ -33,6 +33,7 @@ dependencies:
   fluttertoast: ^8.2.12
   http: ^1.3.0
   image_picker: ^1.1.2
+  carousel_slider: ^5.0.0
   flutter:
     sdk: flutter
 
