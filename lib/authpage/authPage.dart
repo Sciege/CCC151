@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fureverhome/authentication/signup/sign_up.dart';
 import 'package:fureverhome/users/guest_user.dart';
 
+import '../colors/appColors.dart';
+
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
 
@@ -9,79 +11,120 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColors.creamWhite,
         title: const Text(
           'Furever Home',
           style: TextStyle(
             fontSize: 26,
-            fontWeight: FontWeight.normal,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+            color: AppColors.darkGray,
           ),
         ),
-        backgroundColor: Colors.blue,
       ),
-      body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            double containerWidth = constraints.maxWidth > 400 ? 350 : constraints.maxWidth * 0.9;
-            double containerHeight = constraints.maxHeight * 0.6;
+      body: Container(
+        color: AppColors.paleBeige,
+        child: Center(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              double containerWidth =
+              constraints.maxWidth > 600 ? 500 : constraints.maxWidth * 0.9;
+              double containerHeight = constraints.maxHeight * 0.7;
+              bool isWideScreen = constraints.maxWidth > 600;
 
-            return Container(
-              height: containerHeight,
-              width: containerWidth,
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildAuthContainer(
-                    icon: Icon(Icons.pets_sharp, size: 50),
-                    context: context,
-                    title: 'Find a Pet',
-                    description: 'Start your journey to finding a loving pet today! Browse through our listings and discover your perfect companion.',
-                    onTap: () {
-                      Navigator.pushNamed(context, GuestUser.guestScreen);
-                    },
-                  ),
-                  _buildAuthContainer(
-                    icon: Icon(Icons.home, size: 50),
-                    context: context,
-                    title: 'Find a Home',
-                    description: 'Looking for a loving home for your pet? List them here.',
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
+              return Container(
+                height: containerHeight,
+                width: containerWidth,
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: AppColors.creamWhite,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.darkBlueGray.withOpacity(0.15),
+                      spreadRadius: 2,
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: isWideScreen
+                    ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: _buildAuthContainers(context, isWideScreen),
+                )
+                    : Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: _buildAuthContainers(context, isWideScreen),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
+  List<Widget> _buildAuthContainers(BuildContext context, bool isWideScreen) {
+    return [
+      _buildAuthContainer(
+        icon: Icons.pets_sharp,
+        title: 'Find a Pet',
+        description:
+        'Start your journey to finding a loving pet today! Browse through our listings and discover your perfect companion.',
+        onTap: () {
+          Navigator.pushNamed(context, GuestUser.guestScreen);
+        },
+        isWideScreen: isWideScreen,
+        cardColor: AppColors.darkBlueGray,
+        context: context,
+      ),
+      _buildAuthContainer(
+        icon: Icons.home,
+        title: 'Find a Home',
+        description: 'Looking for a loving home for your pet? List them here.',
+        onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => SignUp()));
+        },
+        isWideScreen: isWideScreen,
+        cardColor: AppColors.mediumBlueGray,
+        context: context,
+      ),
+    ];
+  }
+
   Widget _buildAuthContainer({
-    required Icon icon,
-    required BuildContext context,
+    required IconData icon,
     required String title,
     required String description,
     required VoidCallback onTap,
+    required bool isWideScreen,
+    required BuildContext context,
+    required Color cardColor,
   }) {
+    double width = isWideScreen
+        ? MediaQuery.of(context).size.width * 0.35
+        : MediaQuery.of(context).size.width * 0.8;
+
+    double height = isWideScreen
+        ? MediaQuery.of(context).size.height * 0.4
+        : MediaQuery.of(context).size.height * 0.25;
+
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(15),
+      splashColor: AppColors.gold.withOpacity(0.3),
       child: Container(
-        ///Added MediaQuery for responsive
-        height: MediaQuery.of(context).size.height * 0.4,
-        width: MediaQuery.of(context).size.width * 0.4,
-        padding: const EdgeInsets.all(8.0),
+        height: height,
+        width: width,
+        padding: const EdgeInsets.all(12.0),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: AppColors.darkGray.withOpacity(0.1),
               spreadRadius: 2,
               blurRadius: 10,
               offset: const Offset(0, 5),
@@ -92,20 +135,25 @@ class AuthPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            icon,
+            Icon(icon, size: isWideScreen ? 60 : 50, color: AppColors.white),
+            const SizedBox(height: 10),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 18,
+              style: TextStyle(
+                fontSize: isWideScreen ? 22 : 18,
                 fontWeight: FontWeight.bold,
+                color: AppColors.white,
               ),
             ),
             const SizedBox(height: 10),
             Text(
               description,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14),
+              style: TextStyle(
+                fontSize: isWideScreen ? 16 : 14,
+                color: AppColors.white,
+              ),
             ),
           ],
         ),
