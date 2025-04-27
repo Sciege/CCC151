@@ -9,11 +9,15 @@ class Info extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// Responsive UI
+    final size = MediaQuery.of(context).size;
+    final width = size.width;
+    final height = size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.creamWhite,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
         ),
@@ -26,11 +30,11 @@ class Info extends StatelessWidget {
             children: [
               Text('Meet The Team',
                   style: TextStyle(
-                      fontSize: 40,
+                      fontSize: height * 0.051, // Making it responsive
                       fontWeight: FontWeight.bold,
                       color: AppColors.darkGray)),
               Container(
-                width: 310,
+                width: width * 0.75, // Making it responsive
                 padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: AppColors.creamWhite,
@@ -56,7 +60,7 @@ class Info extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Column(
                       children: [
                         Align(
@@ -68,7 +72,7 @@ class Info extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('CHESLER JOHN HAMILI',
+                                  const Text('CHESLER JOHN HAMILI',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18,
@@ -76,7 +80,7 @@ class Info extends StatelessWidget {
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.facebook,
                                         color: AppColors.darkGray,
                                       ),
@@ -88,11 +92,11 @@ class Info extends StatelessWidget {
                                   )
                                 ],
                               ),
-                              Text(
+                              const Text(
                                 'Developer',
                                 style: TextStyle(color: AppColors.darkGray),
                               ),
-                              Text(
+                              const Text(
                                 'BSIT 2D',
                                 style: TextStyle(color: AppColors.darkBlueGray),
                               ),
