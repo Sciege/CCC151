@@ -84,7 +84,7 @@ class _GuestUserState extends State<GuestUser> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.creamWhite,
-          elevation: 0,
+          //elevation: 0,
           systemOverlayStyle: const SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Brightness.dark,
@@ -219,11 +219,15 @@ class _GuestUserState extends State<GuestUser> {
                   ),
                   items: displayPets.map((pet) {
                     return _carouselPetCard(
+                      /// If we will not set this no Unknown it will cause error
                       image: pet['imageUrl'],
                       name: pet['name'] ?? 'Unknown',
                       breed: pet['breed'] ?? 'Unknown',
                       age: pet['age'] ?? 0,
                       place: pet['place'] ?? pet['location'] ?? 'Unknown',
+                      contactNumber: pet['contactNumber'] ?? 'Unknown',
+                      about: pet['about'] ?? 'Unknown',
+                      ownerName: pet['ownerName'] ?? 'Unknown',
                       context: context,
                     );
                   }).toList(),
@@ -251,11 +255,15 @@ class _GuestUserState extends State<GuestUser> {
                         itemBuilder: (context, index) {
                           final pet = displayPets[index];
                           return _petCard(
+                            /// If we will not set this no Unknown it will cause error
                             image: pet['imageUrl'],
                             name: pet['name'] ?? 'Unknown',
                             breed: pet['breed'] ?? 'Unknown',
                             age: pet['age'] ?? 0,
                             place: pet['place'] ?? pet['location'] ?? 'Unknown',
+                            contactNumber: pet['contactNumber'] ?? 'Unknown',
+                            about: pet['about'] ?? 'Unknown',
+                            ownerName: pet['ownerName'] ?? 'test',
                             context: context,
                           );
                         },
@@ -276,6 +284,9 @@ Widget _carouselPetCard({
   required String breed,
   required dynamic age,
   required String place,
+  required String contactNumber,
+  required String about,
+  required String ownerName,
   required BuildContext context,
 }) {
   // Handle potential null values for image and age
@@ -302,6 +313,9 @@ Widget _carouselPetCard({
             breed: breed,
             age: petAge,
             place: place,
+            contactNumber: contactNumber,
+            about: about,
+            ownerName: ownerName,
             petId: '',
             refreshPets: () {},
           ),
@@ -398,6 +412,9 @@ Widget _petCard({
   required String breed,
   required dynamic age,
   required String place,
+  required String about,
+  required String ownerName,
+  required String contactNumber,
   required BuildContext context,
 }) {
   // Handle potential null values for image and age
@@ -424,6 +441,9 @@ Widget _petCard({
             breed: breed,
             age: petAge,
             place: place,
+            contactNumber: contactNumber,
+            about: about,
+            ownerName: ownerName,
             petId: '',
             refreshPets: () {},
           ),
@@ -450,30 +470,32 @@ Widget _petCard({
             borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
             child: imageUrl.isNotEmpty
                 ? Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              width: double.infinity, // Ensure the image takes the full width
-              height: 150, // Set a fixed height for the image
-              errorBuilder: (context, error, stackTrace) {
-                return const Center(
-                    child: Icon(Icons.broken_image,
-                        color: AppColors.darkGray));
-              },
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                        : null,
-                    color: AppColors.gold, // Gold spinner
-                  ),
-                );
-              },
-            )
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    // Ensure the image takes the full width
+                    height: 150,
+                    // Set a fixed height for the image
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                          child: Icon(Icons.broken_image,
+                              color: AppColors.darkGray));
+                    },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                          color: AppColors.gold, // Gold spinner
+                        ),
+                      );
+                    },
+                  )
                 : const Center(
-                child: Icon(Icons.pets, color: AppColors.darkGray)),
+                    child: Icon(Icons.pets, color: AppColors.darkGray)),
           ),
           // Pet information with reduced padding
           Padding(
@@ -489,7 +511,8 @@ Widget _petCard({
                     color: AppColors.darkGray, // Dark gray text
                   ),
                 ),
-                SizedBox(height: 4), // Reduced spacing between name and breed/age
+                SizedBox(height: 4),
+                // Reduced spacing between name and breed/age
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -506,7 +529,8 @@ Widget _petCard({
                     ),
                   ],
                 ),
-                SizedBox(height: 2), // Reduced spacing between breed/age and place
+                SizedBox(height: 2),
+                // Reduced spacing between breed/age and place
                 Text(
                   '📍$place',
                   style: TextStyle(fontSize: 12, color: AppColors.darkBlueGray),
@@ -519,4 +543,3 @@ Widget _petCard({
     ),
   );
 }
-
