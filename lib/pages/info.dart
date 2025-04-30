@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fureverhome/colors/appColors.dart';
 
 class Info extends StatelessWidget {
@@ -13,6 +14,15 @@ class Info extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
+
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    //responsive text
+    final double textScale =
+        screenWidth / 360; // base size from common width of phone
+    //responsive scale
+    final iconSize = screenWidth * 0.8;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.creamWhite,
@@ -72,33 +82,36 @@ class Info extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text('CHESLER JOHN HAMILI',
+                                   Text('CHESLER JOHN HAMILI',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 18,
+                                          fontSize: 16 * textScale,
                                           color: AppColors.darkGray)),
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(
+                                       Icon(
                                         Icons.facebook,
                                         color: AppColors.darkGray,
+                                        size: 0.075 * iconSize,
                                       ),
-                                      Image.asset(
-                                        'assets/mdi_github.png',
+                                      SvgPicture.asset(
+                                        'assets/github.svg',
                                         color: AppColors.darkGray,
+                                        height: 0.075 *iconSize,
+                                        width: 0.075 *iconSize,
                                       ),
                                     ],
                                   )
                                 ],
                               ),
-                              const Text(
+                               Text(
                                 'Developer',
-                                style: TextStyle(color: AppColors.darkGray),
+                                style: TextStyle(color: AppColors.darkGray,fontSize: 12 * textScale),
                               ),
-                              const Text(
+                               Text(
                                 'BSIT 2D',
-                                style: TextStyle(color: AppColors.darkBlueGray),
+                                style: TextStyle(color: AppColors.darkBlueGray,fontSize: 12 * textScale),
                               ),
                             ],
                           ),

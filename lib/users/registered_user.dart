@@ -342,7 +342,8 @@ class _RegisteredUserState extends State<RegisteredUser> {
                             // You can show a SnackBar or Dialog to notify the user
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(backgroundColor: AppColors.errorRed,
+                              SnackBar(
+                                  backgroundColor: AppColors.errorRed,
                                   content: Text('Please fill out all fields.')),
                             );
                             return; // Prevent further execution
@@ -362,12 +363,15 @@ class _RegisteredUserState extends State<RegisteredUser> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.brown,
+                          backgroundColor: Colors.brown[100],
                           // Matching the button color
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                         ),
-                        child: Text('Add Pet'),
+                        child: Text(
+                          'Add Pet',
+                          style: TextStyle(color: Colors.brown),
+                        ),
                       ),
                     ],
                   );
