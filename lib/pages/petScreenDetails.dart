@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../authentication/auth_registered_users.dart';
 import 'package:http/http.dart' as http;
 import '../colors/appColors.dart';
@@ -297,20 +298,59 @@ class _PetDetailsScreenState extends State<PetDetailsScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton.icon(
-                              onPressed: () {
-                                // Here you would implement the call functionality
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        'Calling $ownerName at $contactNumber'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
+                              onPressed: () async {
+                                // Redirected to call the Owner
+                                final Uri phoneUri =
+                                    Uri(scheme: 'tel', path: contactNumber);
+                                if (await canLaunchUrl(phoneUri)) {
+                                  await launchUrl(phoneUri);
+                                }
+                                // else {
+                                //   ScaffoldMessenger.of(context).showSnackBar(
+                                //     SnackBar(
+                                //       content: Text('Could not launch dialer'),
+                                //       backgroundColor: Colors.red,
+                                //     ),
+                                //   );
+                                // }
                               },
                               icon: const Icon(Icons.call),
                               label: const Text('Contact Owner'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                                // Redirected to call the Owner
+                                final Uri phoneUri =
+                                    Uri(scheme: 'sms', path: contactNumber);
+                                if (await canLaunchUrl(phoneUri)) {
+                                  await launchUrl(phoneUri);
+                                }
+                                //  else {
+                                //   ScaffoldMessenger.of(context).showSnackBar(
+                                //     SnackBar(
+                                //       content: Text('Could not launch dialer'),
+                                //       backgroundColor: Colors.red,
+                                //     ),
+                                //   );
+                                // }
+                              },
+                              icon: const Icon(Icons.message_outlined),
+                              label: const Text('Message Owner'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.yellow[700],
                                 foregroundColor: Colors.white,
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12),

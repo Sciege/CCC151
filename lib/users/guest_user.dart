@@ -79,6 +79,11 @@ class _GuestUserState extends State<GuestUser> {
     List<Map<String, dynamic>> displayPets =
         filterPets(query: searchQuery) ?? [];
 
+    //responsive text
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double textScale =
+        screenWidth / 360; // base size from common width of phone
+
     // Show loading spinner while waiting for pets data
     if (isLoading) {
       return Scaffold(
@@ -229,6 +234,7 @@ class _GuestUserState extends State<GuestUser> {
                       about: pet['about'] ?? 'Unknown',
                       ownerName: pet['ownerName'] ?? 'Unknown',
                       context: context,
+                      textScale: textScale,
                     );
                   }).toList(),
                 ),
@@ -265,6 +271,7 @@ class _GuestUserState extends State<GuestUser> {
                             about: pet['about'] ?? 'Unknown',
                             ownerName: pet['ownerName'] ?? 'test',
                             context: context,
+                            textScale: textScale,
                           );
                         },
                       ),
@@ -278,17 +285,17 @@ class _GuestUserState extends State<GuestUser> {
 }
 
 // Carousel pet card widget
-Widget _carouselPetCard({
-  required dynamic image,
-  required String name,
-  required String breed,
-  required dynamic age,
-  required String place,
-  required String contactNumber,
-  required String about,
-  required String ownerName,
-  required BuildContext context,
-}) {
+Widget _carouselPetCard(
+    {required dynamic image,
+    required String name,
+    required String breed,
+    required dynamic age,
+    required String place,
+    required String contactNumber,
+    required String about,
+    required String ownerName,
+    required BuildContext context,
+    required double textScale}) {
   // Handle potential null values for image and age
   String imageUrl = '';
   if (image != null && image.toString().isNotEmpty) {
@@ -377,23 +384,23 @@ Widget _carouselPetCard({
             children: [
               Text(
                 name,
-                style: const TextStyle(
-                  fontSize: 20,
+                style: TextStyle(
+                  fontSize: 20 * textScale,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
               Text(
                 '$breed • $petAge years old',
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: 14 * textScale,
                   color: Colors.white,
                 ),
               ),
               Text(
                 '📍$place',
-                style: const TextStyle(
-                  fontSize: 12,
+                style: TextStyle(
+                  fontSize: 12 * textScale,
                   color: Colors.white,
                 ),
               ),
@@ -406,17 +413,17 @@ Widget _carouselPetCard({
 }
 
 // Pet card widget
-Widget _petCard({
-  required dynamic image,
-  required String name,
-  required String breed,
-  required dynamic age,
-  required String place,
-  required String about,
-  required String ownerName,
-  required String contactNumber,
-  required BuildContext context,
-}) {
+Widget _petCard(
+    {required dynamic image,
+    required String name,
+    required String breed,
+    required dynamic age,
+    required String place,
+    required String about,
+    required String ownerName,
+    required String contactNumber,
+    required BuildContext context,
+    required double textScale}) {
   // Handle potential null values for image and age
   String imageUrl = '';
   if (image != null && image.toString().isNotEmpty) {
@@ -499,14 +506,14 @@ Widget _petCard({
           ),
           // Pet information with reduced padding
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   name,
-                  style: const TextStyle(
-                    fontSize: 18,
+                  style: TextStyle(
+                    fontSize: 19 * textScale,
                     fontWeight: FontWeight.bold,
                     color: AppColors.darkGray, // Dark gray text
                   ),
@@ -518,14 +525,14 @@ Widget _petCard({
                   children: [
                     Text(
                       breed,
-                      style: const TextStyle(
-                          fontSize: 14, color: AppColors.darkGray),
+                      style: TextStyle(
+                          fontSize: 15 * textScale, color: AppColors.darkGray),
                     ),
                     Text(' • '),
                     Text(
                       "$petAge years old",
-                      style: const TextStyle(
-                          fontSize: 14, color: AppColors.darkGray),
+                      style: TextStyle(
+                          fontSize: 15 * textScale, color: AppColors.darkGray),
                     ),
                   ],
                 ),
@@ -533,7 +540,8 @@ Widget _petCard({
                 // Reduced spacing between breed/age and place
                 Text(
                   '📍$place',
-                  style: TextStyle(fontSize: 12, color: AppColors.darkBlueGray),
+                  style: TextStyle(
+                      fontSize: 14 * textScale, color: AppColors.darkBlueGray),
                 ),
               ],
             ),
