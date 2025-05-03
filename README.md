@@ -17,10 +17,11 @@ Both Ends
 - All external links (e.g., feedback form, info pages) are fully functional
   
 ## Getting started
-1. Download the APK- Click here to download the latest release ([Google Drive Link](https://drive.google.com/drive/folders/1trcBW-lOP1nPVnr207cEdJxCjQkuHgkY?usp=drive_link))
-2. Install on your Android device
-- Enable “Install from unknown sources” in your settings
-- Open the APK to install
+1. Download the APK
+   - Click here to download the latest release ([Google Drive Link](https://drive.google.com/drive/folders/1trcBW-lOP1nPVnr207cEdJxCjQkuHgkY?usp=drive_link))
+3. Install on your Android device
+   - Enable “Install from unknown sources” in your settings
+   - Open the APK to install
 3. Enjoy exploring and listing fur-pets!
 
 
