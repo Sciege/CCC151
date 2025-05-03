@@ -39,37 +39,40 @@ class AuthPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
               child: Row(
                 children: [
+                  const SizedBox(width: 8),
                   Expanded(
                     child: RichText(
                       text: TextSpan(
                         style: TextStyle(
                           color: AppColors.darkGray,
-                          fontSize: 12,
+                          fontSize: 12 * textScale,
                         ),
                         children: [
                           TextSpan(
-                            text: 'Disclaimer: ',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                              text: 'Disclaimer:',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                           const TextSpan(
-                            text: 'This is a beta version. Report a problem via ',
-                          ),
+                              text:
+                              ' This is beta version. Report a problem via '),
                           TextSpan(
                             text: 'feedback form',
                             style: TextStyle(
                               color: AppColors.gold,
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
+                              fontSize: 12 * textScale,
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
+                                // Open Google Forms feedback form in browser
                                 launchUrl(
-                                  Uri.parse('https://forms.gle/Piyb7XTnhpGAdHbo9'),
+                                  Uri.parse(
+                                      'https://forms.gle/Piyb7XTnhpGAdHbo9'),
                                   mode: LaunchMode.externalApplication,
                                 );
                               },
                           ),
-                          const TextSpan(text: '!'),
+                          TextSpan(text: '!')
                         ],
                       ),
                     ),

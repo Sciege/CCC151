@@ -114,17 +114,16 @@ class _GuestUserState extends State<GuestUser> {
                     decoration: InputDecoration(
                       hintText: 'Search',
                       hintStyle:
-                          TextStyle(color: AppColors.darkGray.withOpacity(0.7)),
+                      TextStyle(color: AppColors.darkGray.withOpacity(0.7)),
                       prefixIcon:
-                          const Icon(Icons.search, color: AppColors.darkGray),
+                      const Icon(Icons.search, color: AppColors.darkGray),
                       contentPadding: const EdgeInsets.symmetric(),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide(color: AppColors.gold),
                       ),
                       filled: true,
-                      fillColor: AppColors
-                          .white, // White background for the text field
+                      fillColor: AppColors.white,
                     ),
                     textAlignVertical: TextAlignVertical.center,
                   ),
@@ -138,7 +137,7 @@ class _GuestUserState extends State<GuestUser> {
                 icon: const Icon(
                   Icons.info_outline,
                   size: 35,
-                  color: AppColors.darkGray, // Dark gray icon
+                  color: AppColors.darkGray,
                 ),
               ),
             ],
@@ -146,9 +145,57 @@ class _GuestUserState extends State<GuestUser> {
         ),
         body: Container(
           color: AppColors.paleBeige,
-          child: const Center(
-              child: CircularProgressIndicator(color: AppColors.gold)),
-        ), // Gold spinner
+          child: Column(
+            children: [
+              // Disclaimer at the top with padding
+              Container(
+                color: AppColors.gold.withOpacity(0.2),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: RichText(
+                    text: TextSpan(
+                      style: TextStyle(
+                        color: AppColors.darkGray,
+                        fontSize: 12 * textScale,
+                      ),
+                      children: [
+                        TextSpan(
+                            text: 'Disclaimer:',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        const TextSpan(
+                            text: ' This is beta version. Report a problem via '),
+                        TextSpan(
+                          text: 'feedback form',
+                          style: TextStyle(
+                            color: AppColors.gold,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            fontSize: 12 * textScale,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              // Open Google Forms feedback form in browser
+                              launchUrl(
+                                Uri.parse('https://forms.gle/Piyb7XTnhpGAdHbo9'),
+                                mode: LaunchMode.externalApplication,
+                              );
+                            },
+                        ),
+                        TextSpan(text: '!')
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Center the spinner in the remaining space
+              Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(color: AppColors.gold),
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
