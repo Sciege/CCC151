@@ -1,6 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fureverhome/authentication/signup/sign_up.dart';
 import 'package:fureverhome/users/guest_user.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../colors/appColors.dart';
 
@@ -9,6 +11,10 @@ class AuthPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    //responsive text
+    final double textScale =
+        screenWidth / 360; // base size from common width of phone
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.creamWhite,
@@ -24,42 +30,94 @@ class AuthPage extends StatelessWidget {
       ),
       body: Container(
         color: AppColors.paleBeige,
-        child: Center(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              double containerWidth =
-              constraints.maxWidth > 600 ? 500 : constraints.maxWidth * 0.9;
-              double containerHeight = constraints.maxHeight * 0.7;
-              bool isWideScreen = constraints.maxWidth > 600;
-
-              return Container(
-                height: containerHeight,
-                width: containerWidth,
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: AppColors.creamWhite,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.darkBlueGray.withOpacity(0.15),
-                      spreadRadius: 2,
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
+        child: Column(
+          children: [
+            // Disclaimer shown at the top always
+            Container(
+              width: double.infinity,
+              color: AppColors.gold.withOpacity(0.2),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          color: AppColors.darkGray,
+                          fontSize: 12,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: 'Disclaimer: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const TextSpan(
+                            text: 'This is a beta version. Report a problem via ',
+                          ),
+                          TextSpan(
+                            text: 'feedback form',
+                            style: TextStyle(
+                              color: AppColors.gold,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                launchUrl(
+                                  Uri.parse('https://forms.gle/Piyb7XTnhpGAdHbo9'),
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              },
+                          ),
+                          const TextSpan(text: '!'),
+                        ],
+                      ),
                     ),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    double containerWidth = constraints.maxWidth > 600
+                        ? 500
+                        : constraints.maxWidth * 0.9;
+                    double containerHeight = constraints.maxHeight * 0.75;
+                    bool isWideScreen = constraints.maxWidth > 600;
+
+                    return Container(
+                      height: containerHeight,
+                      width: containerWidth,
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: AppColors.creamWhite,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.darkBlueGray.withOpacity(0.15),
+                            spreadRadius: 2,
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: isWideScreen
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: _buildAuthContainers(context, isWideScreen),
+                      )
+                          : Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: _buildAuthContainers(context, isWideScreen),
+                      ),
+                    );
+                  },
                 ),
-                child: isWideScreen
-                    ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: _buildAuthContainers(context, isWideScreen),
-                )
-                    : Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: _buildAuthContainers(context, isWideScreen),
-                ),
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );

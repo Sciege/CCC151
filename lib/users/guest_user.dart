@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fureverhome/colors/appColors.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import '../pages/petScreenDetails.dart';
 import 'guest_user_filter.dart';
 import '../pages/info.dart';
@@ -27,7 +29,11 @@ class _GuestUserState extends State<GuestUser> {
   Future fetchPets() async {
     try {
       final response =
-          await http.get(Uri.parse('http://10.0.2.2:5000/api/pets'));
+
+          ///Local
+          // await http.get(Uri.parse('http://10.0.2.2:5000/api/pets'));
+          await http
+              .get(Uri.parse('https://ccc-151-backend.onrender.com/api/pets'));
 
       if (response.statusCode == 200) {
         setState(() {
@@ -205,13 +211,77 @@ class _GuestUserState extends State<GuestUser> {
         child: SafeArea(
           child: Column(
             children: [
+              // Disclaimer banner
+              Container(
+                width: double.infinity,
+                color: AppColors.gold.withOpacity(0.2),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                child: Row(
+                  children: [
+                    //const Icon(Icons.info_outline, size: 16, color: AppColors.darkGray),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: AppColors.darkGray,
+                            fontSize: 12 * textScale,
+                          ),
+                          children: [
+                            TextSpan(
+                                text: 'Disclaimer:',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            const TextSpan(
+                                text:
+                                    ' This is beta version. Report a problem via '),
+                            TextSpan(
+                              text: 'feedback form',
+                              style: TextStyle(
+                                color: AppColors.gold,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                                fontSize: 12 * textScale,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  // Open Google Forms feedback form in browser
+                                  launchUrl(
+                                    Uri.parse(
+                                        'https://forms.gle/Piyb7XTnhpGAdHbo9'),
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                },
+                            ),
+                            TextSpan(text: '!')
+                          ],
+                        ),
+                      ),
+                    ),
+                    // IconButton(
+                    //   padding: EdgeInsets.zero,
+                    //   constraints: const BoxConstraints(),
+                    //   icon: const Icon(Icons.close, size: 16, color: AppColors.darkGray),
+                    //   onPressed: () {
+                    //     //TODO
+                    //     // Hide the disclaimer
+                    //     // Implementation depends on your state management approach
+                    //     // For example:
+                    //     // setState(() {
+                    //     //   showDisclaimer = false;
+                    //     // });
+                    //   },
+                    // ),
+                  ],
+                ),
+              ),
               SizedBox(
                   height: MediaQuery.of(context).size.height *
-                      0.01), // 25% of screen height
+                      0.01), // Small spacing after disclaimer
               // Carousel
               SizedBox(
                 height: MediaQuery.of(context).size.height *
-                    0.25, // 25% of screen height
+                    0.29, // 25% of screen height
                 child: CarouselSlider(
                   options: CarouselOptions(
                     viewportFraction: 0.8,
@@ -225,7 +295,7 @@ class _GuestUserState extends State<GuestUser> {
                   items: displayPets.map((pet) {
                     return _carouselPetCard(
                       /// If we will not set this no Unknown it will cause error
-                      image: pet['imageUrl'],
+                      image: pet['imageFileId'],
                       name: pet['name'] ?? 'Unknown',
                       breed: pet['breed'] ?? 'Unknown',
                       age: pet['age'] ?? 0,
@@ -262,7 +332,7 @@ class _GuestUserState extends State<GuestUser> {
                           final pet = displayPets[index];
                           return _petCard(
                             /// If we will not set this no Unknown it will cause error
-                            image: pet['imageUrl'],
+                            image: pet['imageFileId'],
                             name: pet['name'] ?? 'Unknown',
                             breed: pet['breed'] ?? 'Unknown',
                             age: pet['age'] ?? 0,
@@ -300,11 +370,11 @@ Widget _carouselPetCard(
   String imageUrl = '';
   if (image != null && image.toString().isNotEmpty) {
     // Extract just the filename from the URL
-    String originalUrl = image.toString();
-    String filename = originalUrl.split('/').last;
+    // String originalUrl = image.toString();
+    // String filename = originalUrl.split('/').last;
 
     // Create a new URL pointing to our proxy endpoint
-    imageUrl = 'http://10.0.2.2:5000/api/pets/image/$filename';
+    imageUrl = 'https://ccc-151-backend.onrender.com/api/pets/image/$image';
   }
 
   final int petAge = age is int ? age : 0;
@@ -385,7 +455,7 @@ Widget _carouselPetCard(
               Text(
                 name,
                 style: TextStyle(
-                  fontSize: 20 * textScale,
+                  fontSize: 18 * textScale,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -393,14 +463,14 @@ Widget _carouselPetCard(
               Text(
                 '$breed • $petAge years old',
                 style: TextStyle(
-                  fontSize: 14 * textScale,
+                  fontSize: 12 * textScale,
                   color: Colors.white,
                 ),
               ),
               Text(
                 '📍$place',
                 style: TextStyle(
-                  fontSize: 12 * textScale,
+                  fontSize: 10 * textScale,
                   color: Colors.white,
                 ),
               ),
@@ -415,24 +485,24 @@ Widget _carouselPetCard(
 // Pet card widget
 Widget _petCard(
     {required dynamic image,
-    required String name,
-    required String breed,
-    required dynamic age,
-    required String place,
-    required String about,
-    required String ownerName,
-    required String contactNumber,
-    required BuildContext context,
-    required double textScale}) {
+      required String name,
+      required String breed,
+      required dynamic age,
+      required String place,
+      required String about,
+      required String ownerName,
+      required String contactNumber,
+      required BuildContext context,
+      required double textScale}) {
   // Handle potential null values for image and age
   String imageUrl = '';
   if (image != null && image.toString().isNotEmpty) {
     // Extract just the filename from the URL
-    String originalUrl = image.toString();
-    String filename = originalUrl.split('/').last;
+    // String originalUrl = image.toString();
+    // String filename = originalUrl.split('/').last;
 
     // Create a new URL pointing to our proxy endpoint
-    imageUrl = 'http://10.0.2.2:5000/api/pets/image/$filename';
+    imageUrl = 'https://ccc-151-backend.onrender.com/api/pets/image/$image';
   }
 
   final int petAge = age is int ? age : 0;
@@ -473,36 +543,40 @@ Widget _petCard(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Image container without aspect ratio
-          ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-            child: imageUrl.isNotEmpty
-                ? Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    // Ensure the image takes the full width
-                    height: 150,
-                    // Set a fixed height for the image
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Center(
-                          child: Icon(Icons.broken_image,
-                              color: AppColors.darkGray));
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  loadingProgress.expectedTotalBytes!
-                              : null,
-                          color: AppColors.gold, // Gold spinner
-                        ),
-                      );
-                    },
-                  )
-                : const Center(
-                    child: Icon(Icons.pets, color: AppColors.darkGray)),
+          AspectRatio(
+            aspectRatio: 1.5,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+              child: imageUrl.isNotEmpty
+                  ? Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                alignment: Alignment.center,
+                // Ensure the image takes the full width
+                //height: 150,
+                // Set a fixed height for the image
+                errorBuilder: (context, error, stackTrace) {
+                  return const Center(
+                      child: Icon(Icons.broken_image,
+                          color: AppColors.darkGray));
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                          : null,
+                      color: AppColors.gold, // Gold spinner
+                    ),
+                  );
+                },
+              )
+                  : const Center(
+                  child: Icon(Icons.pets, color: AppColors.darkGray)),
+            ),
           ),
           // Pet information with reduced padding
           Padding(
@@ -510,12 +584,18 @@ Widget _petCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 19 * textScale,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.darkGray, // Dark gray text
+                // Pet name
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 17 * textScale,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.darkGray, // Dark gray text
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 SizedBox(height: 4),
@@ -523,25 +603,47 @@ Widget _petCard(
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      breed,
-                      style: TextStyle(
-                          fontSize: 15 * textScale, color: AppColors.darkGray),
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '$breed • $petAge years old',
+                          style: TextStyle(
+                              fontSize: 15 * textScale,
+                              color: AppColors.darkGray),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ),
-                    Text(' • '),
-                    Text(
-                      "$petAge years old",
-                      style: TextStyle(
-                          fontSize: 15 * textScale, color: AppColors.darkGray),
-                    ),
+                    // Text(' • '),
+                    // Flexible(
+                    //   child: FittedBox(
+                    //     fit: BoxFit.scaleDown,
+                    //     child: Text(
+                    //       "$petAge years old",
+                    //       style: TextStyle(
+                    //           fontSize: 15 * textScale,
+                    //           color: AppColors.darkGray),
+                    //       maxLines: 1,
+                    //       overflow: TextOverflow.ellipsis,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
-                SizedBox(height: 2),
+                SizedBox(height: 4),
                 // Reduced spacing between breed/age and place
-                Text(
-                  '📍$place',
-                  style: TextStyle(
-                      fontSize: 14 * textScale, color: AppColors.darkBlueGray),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    '📍$place',
+                    style: TextStyle(
+                        fontSize: 14 * textScale,
+                        color: AppColors.darkBlueGray),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
@@ -551,3 +653,4 @@ Widget _petCard(
     ),
   );
 }
+
