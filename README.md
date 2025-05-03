@@ -1,16 +1,36 @@
-# fureverhome
+# FureverHome
 
-A new Flutter project.
+FureverHome is a mobile pet adoption app that bridges the gap between pet owners and potential adopters. Whether you're looking to rehome a furry friend or find your new companion, this app makes the process simple and convenient for both ends. 
 
-## Getting Started
+## Features
+Guest-User
+- View all public pet listings available for adoption
 
-This project is a starting point for a Flutter application.
+Registered-User 
+- Post pets for adoption
+- Manage personal listings
+- Reach potential adopters
+- Edit information of the pet
+- Able to access gallery and camera for pictures of the pet
 
-A few resources to get you started if this is your first Flutter project:
+Both Ends
+- All external links (e.g., feedback form, info pages) are fully functional
+  
+## Getting started
+1. Download the APK- Click here to download the latest release ([Google Drive Link](https://drive.google.com/drive/folders/1trcBW-lOP1nPVnr207cEdJxCjQkuHgkY?usp=drive_link))
+2. Install on your Android device
+- Enable “Install from unknown sources” in your settings
+- Open the APK to install
+3. Enjoy exploring and listing fur-pets!
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+## Want to contribute?
+1. Fork the repository
+2. Create a new branch:
+   - git checkout -b feature/your-feature-name
+3. Make your changes and commit:
+   - git commit -m "Add your feature"
+4. Push to your branch:
+   - git push origin feature/your-feature-name
+5. Create a Pull Request
