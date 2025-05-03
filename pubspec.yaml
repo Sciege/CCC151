@@ -36,6 +36,7 @@ dependencies:
   carousel_slider: ^5.0.0
   url_launcher: ^6.3.1
   flutter_svg: ^2.1.0
+  flutter_launcher_icons: ^0.14.3
   flutter:
     sdk: flutter
 
@@ -57,7 +58,20 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/fureverhome.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  # Optional: If you want adaptive icons for Android 8.0+
+  adaptive_icon_background: "#FFFFFF" # or a specific color that matches your brand
+  adaptive_icon_foreground: "assets/fureverhome.png" # ideally this would be a version with transparent padding
+  remove_alpha_ios: true # iOS doesn't support transparency in app icons
+  web:
+    generate: true
+    image_path: "assets/fureverhome.png"
+    background_color: "#FFFFFF"
+    theme_color: "#FFFFFF"
 # The following section is specific to Flutter packages.
 flutter:
 
@@ -72,6 +86,7 @@ flutter:
      - assets/my_picture.jpg
      - assets/mdi_github.png
      - assets/github.svg
+     - assets/fureverhome.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

@@ -1,7 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fureverhome/colors/appColors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Info extends StatelessWidget {
   const Info({super.key});
@@ -14,7 +16,6 @@ class Info extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
-
 
     final double screenWidth = MediaQuery.of(context).size.width;
     //responsive text
@@ -31,6 +32,16 @@ class Info extends StatelessWidget {
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
         ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              'FureverHome',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: AppColors.darkGray),
+            ),
+          ],
+        ),
       ),
       body: Container(
         color: AppColors.paleBeige,
@@ -38,6 +49,69 @@ class Info extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              Container(
+                width: double.infinity,
+                color: AppColors.gold.withOpacity(0.2),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                child: Row(
+                  children: [
+                    //const Icon(Icons.info_outline, size: 16, color: AppColors.darkGray),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            color: AppColors.darkGray,
+                            fontSize: 12 * textScale,
+                          ),
+                          children: [
+                            TextSpan(
+                                text: 'Disclaimer:',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            const TextSpan(
+                                text:
+                                    ' This is beta version. Report a problem via '),
+                            TextSpan(
+                              text: 'feedback form',
+                              style: TextStyle(
+                                color: AppColors.gold,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                                fontSize: 12 * textScale,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  // Open Google Forms feedback form in browser
+                                  launchUrl(
+                                    Uri.parse(
+                                        'https://forms.gle/Piyb7XTnhpGAdHbo9'),
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                },
+                            ),
+                            TextSpan(text: '!')
+                          ],
+                        ),
+                      ),
+                    ),
+                    // IconButton(
+                    //   padding: EdgeInsets.zero,
+                    //   constraints: const BoxConstraints(),
+                    //   icon: const Icon(Icons.close, size: 16, color: AppColors.darkGray),
+                    //   onPressed: () {
+                    //     //TODO
+                    //     // Hide the disclaimer
+                    //     // Implementation depends on your state management approach
+                    //     // For example:
+                    //     // setState(() {
+                    //     //   showDisclaimer = false;
+                    //     // });
+                    //   },
+                    // ),
+                  ],
+                ),
+              ),
               Text('Meet The Team',
                   style: TextStyle(
                       fontSize: height * 0.051, // Making it responsive
@@ -82,7 +156,7 @@ class Info extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                   Text('CHESLER JOHN HAMILI',
+                                  Text('CHESLER JOHN HAMILI',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16 * textScale,
@@ -90,28 +164,40 @@ class Info extends StatelessWidget {
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                       Icon(
-                                        Icons.facebook,
-                                        color: AppColors.darkGray,
-                                        size: 0.075 * iconSize,
+                                      GestureDetector(
+                                        child: Icon(
+                                          Icons.facebook,
+                                          color: AppColors.darkGray,
+                                          size: 0.075 * iconSize,
+                                        ),
+                                        onTap: (){
+                                          launchUrl(Uri.parse('https://www.facebook.com/cheslerjohn'),mode: LaunchMode.inAppBrowserView);
+                                        },
                                       ),
-                                      SvgPicture.asset(
-                                        'assets/github.svg',
-                                        color: AppColors.darkGray,
-                                        height: 0.075 *iconSize,
-                                        width: 0.075 *iconSize,
+                                      GestureDetector(
+                                        child: SvgPicture.asset(
+                                          'assets/github.svg',
+                                          color: AppColors.darkGray,
+                                          height: 0.075 * iconSize,
+                                          width: 0.075 * iconSize,
+                                        ),
+                                        onTap: (){launchUrl(Uri.parse('https://github.com/Sciege'),mode: LaunchMode.inAppBrowserView);},
                                       ),
                                     ],
                                   )
                                 ],
                               ),
-                               Text(
+                              Text(
                                 'Developer',
-                                style: TextStyle(color: AppColors.darkGray,fontSize: 12 * textScale),
+                                style: TextStyle(
+                                    color: AppColors.darkGray,
+                                    fontSize: 12 * textScale),
                               ),
-                               Text(
+                              Text(
                                 'BSIT 2D',
-                                style: TextStyle(color: AppColors.darkBlueGray,fontSize: 12 * textScale),
+                                style: TextStyle(
+                                    color: AppColors.darkBlueGray,
+                                    fontSize: 12 * textScale),
                               ),
                             ],
                           ),
