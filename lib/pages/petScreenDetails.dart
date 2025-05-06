@@ -571,7 +571,7 @@ class _EditPetScreenState extends State<EditPetScreen> {
 
     try {
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:5000/api/pets/${widget.petId}'),
+        Uri.parse('https://ccc-151-backend.onrender.com/api/pets/${widget.petId}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token'

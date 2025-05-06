@@ -361,9 +361,32 @@ class _GuestUserState extends State<GuestUser> {
               // Pets Grid
               Expanded(
                 child: displayPets.isEmpty
-                    ? const Center(
-                        child: Text('No pets found',
-                            style: TextStyle(color: AppColors.darkGray)))
+                    ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.pets,
+                          size: 64,
+                          color: AppColors.gold,
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'No pets available',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Please list a Pet',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),)
                     : GridView.builder(
                         padding: const EdgeInsets.all(8),
                         itemCount: displayPets.length,

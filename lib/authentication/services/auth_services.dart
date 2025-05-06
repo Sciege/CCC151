@@ -102,7 +102,7 @@ class AuthService {
           message = 'The email address is not valid';
           break;
         default:
-          message = 'An error occurred during registration';
+          message = 'An error occurred during Logging in';
       }
       Fluttertoast.showToast(msg: message);
     } catch (e) {

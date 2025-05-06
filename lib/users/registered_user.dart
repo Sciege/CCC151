@@ -25,6 +25,8 @@ class RegisteredUser extends StatefulWidget {
 class _RegisteredUserState extends State<RegisteredUser> {
   List pets = []; // List to store pets
   File? _image; // Variable to store the selected image
+  bool isLoading = true;
+
   // Controllers for text fields
   final nameController = TextEditingController();
   final breedController = TextEditingController();
@@ -39,6 +41,9 @@ class _RegisteredUserState extends State<RegisteredUser> {
   // Fetch pets data from backend
   //GET
   Future getPets() async {
+    setState(() {
+      isLoading = true;
+    });
     String? token = await getIdToken();
     //print(token);
     print("Token first 10 chars: ${token?.substring(0, 10)}...");
@@ -53,12 +58,21 @@ class _RegisteredUserState extends State<RegisteredUser> {
       if (response.statusCode == 200) {
         setState(() {
           pets = json.decode(response.body); // Update pets list
+          setState(() {
+            isLoading = false;
+          });
         });
       } else {
         print('Failed to load pets');
+        setState(() {
+          isLoading = false;
+        });
       }
     } catch (e) {
       print('Error fetching pets: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -358,7 +372,10 @@ class _RegisteredUserState extends State<RegisteredUser> {
                             barrierDismissible: false,
                             builder: (context) {
                               return const Center(
-                                  child: CircularProgressIndicator());
+                                child: CircularProgressIndicator(
+                                  color: AppColors.gold,
+                                ),
+                              );
                             },
                           );
                           await addPet();
@@ -500,107 +517,142 @@ class _RegisteredUserState extends State<RegisteredUser> {
 
               // Pets List
               Expanded(
-                child: pets.isEmpty
+                child: isLoading
                     ? const Center(
                         child: CircularProgressIndicator(
                         color: AppColors.gold,
                       ))
-                    : SingleChildScrollView(
-                        padding: const EdgeInsets.all(25),
-                        child: Column(
-                          children: [
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 25,
-                                childAspectRatio: 1,
-                              ),
-                              itemCount: pets.length,
-                              itemBuilder: (context, index) {
-                                final pet = pets[index];
-                                return Dismissible(
-                                  key: Key(pet['_id'] ?? index.toString()),
-                                  direction: DismissDirection.endToStart,
-                                  background: Container(
-                                    color: Colors.green,
-                                    alignment: Alignment.centerRight,
-                                    padding: const EdgeInsets.only(right: 20.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: const [
-                                        Icon(Icons.home, color: Colors.white),
-                                        Text(
-                                          'ADOPTED',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                    : pets.isEmpty
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.pets,
+                                  size: 64,
+                                  color: AppColors.gold,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'No pets available',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  confirmDismiss: (direction) async {
-                                    return await showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        backgroundColor: AppColors.creamWhite,
-                                        title: const Text("Confirm Adoption"),
-                                        content: Text(
-                                          "Has ${pet['name']} been adopted? This will remove the listing.",
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Please list a Pet',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : SingleChildScrollView(
+                            padding: const EdgeInsets.all(25),
+                            child: Column(
+                              children: [
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 1,
+                                    crossAxisSpacing: 8,
+                                    mainAxisSpacing: 25,
+                                    childAspectRatio: 1,
+                                  ),
+                                  itemCount: pets.length,
+                                  itemBuilder: (context, index) {
+                                    final pet = pets[index];
+                                    return Dismissible(
+                                      key: Key(pet['_id'] ?? index.toString()),
+                                      direction: DismissDirection.endToStart,
+                                      background: Container(
+                                        color: Colors.green,
+                                        alignment: Alignment.centerRight,
+                                        padding:
+                                            const EdgeInsets.only(right: 20.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: const [
+                                            Icon(Icons.home,
+                                                color: Colors.white),
+                                            Text(
+                                              'ADOPTED',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context)
-                                                    .pop(false),
-                                            child: const Text("No"),
+                                      ),
+                                      confirmDismiss: (direction) async {
+                                        return await showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            backgroundColor:
+                                                AppColors.creamWhite,
+                                            title:
+                                                const Text("Confirm Adoption"),
+                                            content: Text(
+                                              "Has ${pet['name']} been adopted? This will remove the listing.",
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context)
+                                                        .pop(false),
+                                                child: const Text("No"),
+                                              ),
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.of(context)
+                                                        .pop(true),
+                                                child:
+                                                    const Text("Yes, Adopted!"),
+                                              ),
+                                            ],
                                           ),
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(true),
-                                            child: const Text("Yes, Adopted!"),
-                                          ),
-                                        ],
+                                        );
+                                      },
+                                      onDismissed: (direction) async {
+                                        setState(() {
+                                          pets.removeAt(index);
+                                        });
+                                        bool success =
+                                            await deletePet(pet['_id']);
+                                        if (!success) {
+                                          print('Failed to delete the pet');
+                                          getPets();
+                                        }
+                                      },
+                                      child: _petCard(
+                                        image: pet['imageFileId'],
+                                        name: pet['name'],
+                                        breed: pet['breed'],
+                                        age: pet['age'],
+                                        place: pet['location'],
+                                        pet: pet,
+                                        about: pet['about'],
+                                        contactNumber: pet['contactNumber'],
+                                        ownerName: pet['ownerName'],
+                                        context: context,
+                                        putPet: putPet,
+                                        refreshPets: getPets,
+                                        textScale: textScale,
                                       ),
                                     );
                                   },
-                                  onDismissed: (direction) async {
-                                    setState(() {
-                                      pets.removeAt(index);
-                                    });
-                                    bool success = await deletePet(pet['_id']);
-                                    if (!success) {
-                                      print('Failed to delete the pet');
-                                      getPets();
-                                    }
-                                  },
-                                  child: _petCard(
-                                    image: pet['imageFileId'],
-                                    name: pet['name'],
-                                    breed: pet['breed'],
-                                    age: pet['age'],
-                                    place: pet['location'],
-                                    pet: pet,
-                                    about: pet['about'],
-                                    contactNumber: pet['contactNumber'],
-                                    ownerName: pet['ownerName'],
-                                    context: context,
-                                    putPet: putPet,
-                                    refreshPets: getPets,
-                                    textScale: textScale,
-                                  ),
-                                );
-                              },
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-              ),
+                          ),
+              )
             ],
           ),
         ),
@@ -822,6 +874,7 @@ Widget _petCard(
                                 ? loadingProgress.cumulativeBytesLoaded /
                                     loadingProgress.expectedTotalBytes!
                                 : null,
+                            color: AppColors.gold,
                           ),
                         );
                       },
